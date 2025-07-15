@@ -1,9 +1,12 @@
+import useAuthStore from "@/store/auth.store";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import "../globals.css";
 
 export default function RootLayout() {
+  const { isLoading, fetchAuthenticatedUser } = useAuthStore();
+
   const [fontsLoaded, error] = useFonts({
     "Quicksand-Bold": require("../assets/fonts/Quicksand-Bold.ttf"),
     "Quicksand-SemiBold": require("../assets/fonts/Quicksand-SemiBold.ttf"),
@@ -18,7 +21,11 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, error]);
 
-  if (!fontsLoaded && !error) {
+  useEffect(() => {
+    fetchAuthenticatedUser();
+  }, [fetchAuthenticatedUser]);
+
+  if (!fontsLoaded && !error && isLoading) {
     return null;
   }
 
